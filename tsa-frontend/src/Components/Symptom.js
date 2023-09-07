@@ -2,7 +2,7 @@ import React from 'react'
 
 function Symptom() {
   return (
-    <div>Symptom</div>
+    <div>Symptom:</div>
   )
 }
 
