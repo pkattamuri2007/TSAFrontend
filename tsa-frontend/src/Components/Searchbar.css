@@ -60,7 +60,7 @@
   }
   
   button:hover {
-    background-color: lightgrey;
+    background-color: rgb(199, 197, 197);
   }
   
   #clearBtn {
