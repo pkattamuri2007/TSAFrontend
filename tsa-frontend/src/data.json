@@ -1,5 +1,4 @@
-[ 
-{"id": "0", "symptom":"Yellow Sputum"},
+[ {"id": "0", "symptom":"Yellow Sputum"},
 {"id": "1", "symptom":"Cardiovascular Finding"},
 {"id": "2", "symptom":"Hypercapnia"},
 {"id": "3", "symptom":"Heavy Feeling"},
