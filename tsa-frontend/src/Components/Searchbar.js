@@ -27,6 +27,8 @@ function SearchBar({ placeholder, data, onDataSubmit }) {
   };
   const onSubmitHandler = (event) => {
     onDataSubmit(event.target.textContent.split('+'));
+    setFilteredData([]);
+    setWordEntered("");
   }
   return (
     <div className="search">

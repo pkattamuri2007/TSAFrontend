@@ -1,36 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import SearchBar from "./Components/Searchbar";
 import data from "./data.json";
 import diseaseData from "./data2.json";
+import { config } from "dotenv";
+import OpenAI from "openai";
+
+config();
+const openai = new OpenAI({
+  apiKey: process.env.REACT_APP_API_KEY,
+  dangerouslyAllowBrowser: true, // This is also the default, can be omitted
+});
 const zeroArray = new Array(406).fill(0);
 function App() {
   const [symptomList, setSymptomList] = useState([]);
   const [finalDiseases, setFinalDiseases] = useState([]);
+  const [whenSubmit, setWhenSubmit] = useState(true);
   var diseaseNames = [];
+  useEffect(() => {
+    if(finalDiseases.length > 0) {
+    console.log(finalDiseases);
+    var chatInput =
+    "Write a 2 sentence summary about the following disease:" +
+    finalDiseases[0][0].toString();
+  console.log(chatInput);
+  openai.chat.completions
+    .create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: chatInput }],
+    })
+    .then((response) => {
+      console.log(response.choices[0].message.content)
+      var tempFinal = finalDiseases;
+      tempFinal[0][2] = response.choices[0].message.content;
+      console.log(tempFinal);
+      setFinalDiseases(tempFinal.slice(0,5));
+    });
+    }
+  }, [whenSubmit]);
+  
   const onSubmitHandler = (newData) => {
-    var bestArray = [];
-    var bestMatch
-    var bestMatches = [0,0,0,0,0,0,0,0,0,0];
- 
+    var bestMatch = 0;
+    var bestMatches = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
     for (let i = 0; i < diseaseData.length; i++) {
       for (let j = 0; j < diseaseData[i].symptoms.length; j++) {
-        if (zeroArray[j] == diseaseData[i].symptoms[j] && zeroArray[j] == 1) {
+        if (zeroArray[j] === diseaseData[i].symptoms[j] && zeroArray[j] === 1) {
           bestMatch++;
         }
       }
-      if (bestMatch > bestMatches[9]) {
+      if (bestMatch > bestMatches[4]) {
         console.log(bestMatch);
-        bestArray = diseaseData[i].symptoms;
+
         diseaseNames.unshift([diseaseData[i].disease, bestMatch]);
         bestMatches.unshift(bestMatch);
       }
 
       bestMatch = 0;
     }
-
     setFinalDiseases(diseaseNames);
-    console.log(diseaseNames, bestMatch);
+    setWhenSubmit(!whenSubmit);
+
   };
   const dataSubmitHandler = (newData) => {
     setSymptomList([...symptomList, newData[0]]);
@@ -39,10 +69,14 @@ function App() {
     console.log(zeroArray);
   };
   console.log(finalDiseases);
-  finalDiseases.sort(function(a, b){return b[1] - a[1]})
+  finalDiseases.sort(function (a, b) {
+    return b[1] - a[1];
+  });
   console.log(finalDiseases);
+
   return (
     <div className="App">
+      <h1>{process.env.REACT_APP_SECRET_CODE}</h1>
       <SearchBar
         placeholder="Enter Your Symptom..."
         data={data}
@@ -57,19 +91,22 @@ function App() {
           </div>
         );
       })}
-      <button className="button-9" role="button" onClick={onSubmitHandler}>
+      <button className="button-9" onClick={onSubmitHandler}>
         Submit
       </button>
-      <p>
+      <div>
         Predicted Disease:{" "}
-        {finalDiseases.slice(0,10).map((data, id) => {
+        {finalDiseases.slice(0, 5).map((data, id) => {
           return (
             <div key={id}>
-              <h2>{data[0]} {data[1]} </h2>
+              
+               <p>{data[0]} {data[1]} {data[2]}</p>
+                {console.log(data)}
+              
             </div>
           );
         })}
-      </p>
+      </div>
     </div>
   );
 }
