@@ -5,12 +5,12 @@ export const percentCalculator = (diseaseArray, selectedSymptoms) => {
         O = 50 * (O ** 2.5);
         var counter = 0;
         for (var j = 0; j < diseaseArray[i][3].length; j++){
-            console.log(diseaseArray[i][3][j]-4.7, 'difference');
+           
             counter += diseaseArray[i][3][j] - 4.7;
     }
     var C = 0
     counter = counter / (diseaseArray[i][3].length);
-    console.log(counter, 'mad');
+
     if ( counter <= 1.07) {
         C = 20
     }
@@ -42,8 +42,9 @@ export const percentCalculator = (diseaseArray, selectedSymptoms) => {
         C = 2
     }
 var combinedTotal = Math.round(100*(O + C))/100;
-selectedSymptoms.length == 1 ? combinedTotal *= 0.5 : combinedTotal = combinedTotal 
-selectedSymptoms.length == 2 ? combinedTotal *= 0.75 : combinedTotal = combinedTotal;
+if (selectedSymptoms.length === 1) {combinedTotal *= 0.5}
+if (selectedSymptoms.length === 2) {combinedTotal *= 0.75}
+
 percentProbablity.push(combinedTotal);
 }
 return percentProbablity;

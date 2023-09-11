@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import SearchBar from "./Components/Searchbar";
 import data from "./data.json";
-import Alert from '@mui/material/Alert';
-import CircularProgress from '@mui/material/CircularProgress';
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 import diseaseData from "./data2.json";
 import { config } from "dotenv";
 import OpenAI from "openai";
@@ -31,46 +31,45 @@ function App() {
   const [finalDiseases, setFinalDiseases] = useState([]);
   //USED TO TRIGGER USE EFFECT
   const [whenSubmit, setWhenSubmit] = useState(true);
+  const [description, setDescription] = useState([]);
 
   //TEMP VARIABLE
   var diseaseNames = [];
+  var tempDesc = []
   //CHAT GPT CALL
   useEffect(() => {
+    console.log("hello");
     setIsLoading(true);
+    console.log(finalDiseases.length > 0);
     if (finalDiseases.length > 0) {
-      console.log(finalDiseases);
+      const asyncLoop = async () => {
+        for (let i = 0; i < finalDiseases.length; i++) {
+          console.log("next");
+          var chatInput =
+            "Write a two sentence summary about the disease " + finalDiseases[i][0];
+          const response = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: chatInput }],
+          });
 
-      var chatInput =
-        "Write a two sentence description for each of the following diseases.Include a exclamation mark as a divider between each description. " 
-for (let i = 0; i < finalDiseases.length; i++) {
-  var tempStr = finalDiseases[i][0].split(' ')[0];
-  chatInput +=  tempStr + ". "  
-}
-      
-      console.log(chatInput);
-      openai.chat.completions
-        .create({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: chatInput }],
-        })
-        .then((response) => {
           console.log(response.choices[0].message.content);
-          var tempFinal = finalDiseases;
-          var responses = response.choices[0].message.content.split("!");
-          console.log(tempFinal);
-          console.log(finalDiseases);
-          console.log(responses)
-         
-          for (let i = 0; i<finalDiseases.length; i++) {
-            tempFinal[i][2] = responses[i];
-          }
-         
-          console.log(tempFinal);
-          setFinalDiseases(tempFinal.slice(0, 5));
-          setIsLoading(false);
-        });
+          tempDesc.push(response.choices[0].message.content);
+          
+        }
+        setDescription(tempDesc);
+        setIsLoading(false);
+      };
+      console.log('hi');
+
+      asyncLoop();
+      console.log('hello')
+      
     }
   }, [whenSubmit]);
+  useEffect(() => {
+    console.log(description);
+  },[description]);
+
   //WHEN SUBMIT BUTTON IS CLICKED
   const onSubmitHandler = (newData) => {
     var bestMatch = 0;
@@ -97,18 +96,22 @@ for (let i = 0; i < finalDiseases.length; i++) {
       bestMatch = 0;
       symptomFreq = [];
     }
-    setFinalDiseases(diseaseNames);
+    setFinalDiseases(diseaseNames.slice(0, 5));
     setWhenSubmit(!whenSubmit);
   };
   const dataSubmitHandler = (newData) => {
     setSymptomList([...symptomList, newData[0]]);
     zeroArray.splice(parseInt(newData[1]), 1, 1);
-    console.log(newData);
-    console.log(newData[1]);
-    console.log(parseInt(newData[1]));
-    console.log(data[parseInt(newData[1])])
-    console.log(data[parseInt(newData[1])].freq)
-    freqArray.splice(parseInt(newData[1]), 1, data[parseInt(newData[1])].freq);
+    while (true) {
+      if (data[parseInt(newData[1])]) {
+        freqArray.splice(
+          parseInt(newData[1]),
+          1,
+          data[parseInt(newData[1])].freq
+        );
+        break;
+      }
+    }
   };
 
   finalDiseases.sort(function (a, b) {
@@ -116,6 +119,7 @@ for (let i = 0; i < finalDiseases.length; i++) {
   });
 
   var symptomChance = calc.percentCalculator(finalDiseases, symptomList);
+  
   return (
     <div className="App">
       <SearchBar
@@ -123,8 +127,12 @@ for (let i = 0; i < finalDiseases.length; i++) {
         data={data}
         onDataSubmit={dataSubmitHandler}
       />
-      {console.log}
-     {symptomList.length < 3 ?  (<Alert sx={{my: 2}} severity="warning">Enter more symptoms for a accurate result</Alert>) : null}
+
+      {symptomList.length < 3 ? (
+        <Alert sx={{ my: 2 }} severity="warning">
+          Enter more symptoms for an accurate result
+        </Alert>
+      ) : null}
       <div className="App-header">Selected Symptoms</div>
 
       {symptomList.map((data, id) => {
@@ -138,7 +146,7 @@ for (let i = 0; i < finalDiseases.length; i++) {
         Submit
       </button>
       <div>
-        {finalDiseases.slice(0, 5).map((data, id) => {
+        {finalDiseases.map((data, id) => {
           return (
             <Card key={id} sx={{ minWidth: 400, maxWidth: 400, mt: 3 }}>
               <CardContent>
@@ -155,8 +163,7 @@ for (let i = 0; i < finalDiseases.length; i++) {
                 <Typography sx={{ my: 1.5 }} color="text.secondary">
                   # of Matching Symptoms: {data[1]}
                 </Typography>
-                <Typography variant="body2">
-                {isLoading ? <CircularProgress /> : data[2]}</Typography>
+                <Typography variant="body2">{!isLoading ? description[id]: <CircularProgress/>}</Typography>
               </CardContent>
               <CardActions>
                 <Button size="small">{symptomChance[id]}%</Button>
