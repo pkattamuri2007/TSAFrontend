@@ -44,9 +44,9 @@ function App() {
     if (finalDiseases.length > 0) {
       const asyncLoop = async () => {
         for (let i = 0; i < finalDiseases.length; i++) {
-          console.log("next");
+        
           var chatInput =
-            "Write a two sentence summary about the disease " + finalDiseases[i][0];
+            "Write a brief description on the disease " + finalDiseases[i][0] + ". Explain shortly how the given symptoms relate to the disease, and give other symptoms that they should look for with this disease. Write all this in 3 sentences.";
           const response = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: chatInput }],
