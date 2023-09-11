@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import SearchBar from "./Components/Searchbar";
 import data from "./data.json";
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import diseaseData from "./data2.json";
 import { config } from "dotenv";
 import OpenAI from "openai";
@@ -22,6 +24,7 @@ const zeroArray = new Array(406).fill(0);
 const freqArray = new Array(406).fill(0);
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
   //LISTS ALL SYMPTOMS
   const [symptomList, setSymptomList] = useState([]);
   //LISTS ALL DISEASES
@@ -33,13 +36,14 @@ function App() {
   var diseaseNames = [];
   //CHAT GPT CALL
   useEffect(() => {
+    setIsLoading(true);
     if (finalDiseases.length > 0) {
       console.log(finalDiseases);
 
       var chatInput =
         "Write a two sentence description for each of the following diseases.Include a exclamation mark as a divider between each description. " 
 for (let i = 0; i < finalDiseases.length; i++) {
-  var tempStr = finalDiseases[i][0].replace(/\s/g, '');
+  var tempStr = finalDiseases[i][0].split(' ')[0];
   chatInput +=  tempStr + ". "  
 }
       
@@ -63,6 +67,7 @@ for (let i = 0; i < finalDiseases.length; i++) {
          
           console.log(tempFinal);
           setFinalDiseases(tempFinal.slice(0, 5));
+          setIsLoading(false);
         });
     }
   }, [whenSubmit]);
@@ -98,8 +103,11 @@ for (let i = 0; i < finalDiseases.length; i++) {
   const dataSubmitHandler = (newData) => {
     setSymptomList([...symptomList, newData[0]]);
     zeroArray.splice(parseInt(newData[1]), 1, 1);
-    console.log(data[0]);
+    console.log(newData);
+    console.log(newData[1]);
     console.log(parseInt(newData[1]));
+    console.log(data[parseInt(newData[1])])
+    console.log(data[parseInt(newData[1])].freq)
     freqArray.splice(parseInt(newData[1]), 1, data[parseInt(newData[1])].freq);
   };
 
@@ -115,6 +123,8 @@ for (let i = 0; i < finalDiseases.length; i++) {
         data={data}
         onDataSubmit={dataSubmitHandler}
       />
+      {console.log}
+     {symptomList.length < 3 ?  (<Alert sx={{my: 2}} severity="warning">Enter more symptoms for a accurate result</Alert>) : null}
       <div className="App-header">Selected Symptoms</div>
 
       {symptomList.map((data, id) => {
@@ -142,10 +152,11 @@ for (let i = 0; i < finalDiseases.length; i++) {
                 <Typography variant="h5" component="div">
                   {data[0]}
                 </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                <Typography sx={{ my: 1.5 }} color="text.secondary">
                   # of Matching Symptoms: {data[1]}
                 </Typography>
-                <Typography variant="body2">{data[2]}</Typography>
+                <Typography variant="body2">
+                {isLoading ? <CircularProgress /> : data[2]}</Typography>
               </CardContent>
               <CardActions>
                 <Button size="small">{symptomChance[id]}%</Button>

@@ -42,6 +42,8 @@ export const percentCalculator = (diseaseArray, selectedSymptoms) => {
         C = 2
     }
 var combinedTotal = Math.round(100*(O + C))/100;
+selectedSymptoms.length == 1 ? combinedTotal *= 0.5 : combinedTotal = combinedTotal 
+selectedSymptoms.length == 2 ? combinedTotal *= 0.75 : combinedTotal = combinedTotal;
 percentProbablity.push(combinedTotal);
 }
 return percentProbablity;
