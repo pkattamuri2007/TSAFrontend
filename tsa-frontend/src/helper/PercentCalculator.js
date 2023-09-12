@@ -1,5 +1,5 @@
-import numData from '../data3.json'
-import diseaseData from '../data2.json'
+import numData from '../data/data3.json'
+import diseaseData from '../data/data2.json'
 export const percentCalculator = (diseaseArray, selectedSymptoms) => {
    var percentProbablity = [];
     for (var i = 0; i < diseaseArray.length; i++){
@@ -47,7 +47,7 @@ var R = 0;
 var diseaseIndex = 0;
 for(j = 0; j < diseaseData.length; j++){
     console.log(diseaseData[j].disease, diseaseArray[i][0])
-    if (diseaseData[j].disease == diseaseArray[i][0]) {
+    if (diseaseData[j].disease === diseaseArray[i][0]) {
         diseaseIndex = j;
         break;
     }
@@ -88,8 +88,6 @@ console.log(diseaseArray[i], counter1);
         else if(counter1 > 3.5){
         R = 40
         }
-        
-        
 
 var combinedTotal = Math.round(100*(O + C+ R))/100;
 console.log(diseaseArray[i]);

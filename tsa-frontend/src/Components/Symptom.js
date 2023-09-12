@@ -1,9 +1,10 @@
 import React from 'react'
 
-function Symptom() {
+export default function Symptom({data,id}) {
   return (
-    <div>Symptom:</div>
+    <div key={id}>
+        <h2>{data} </h2>
+    </div>
   )
 }
 
-export default Symptom
