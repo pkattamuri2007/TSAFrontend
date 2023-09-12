@@ -103,6 +103,7 @@ function App() {
     setSymptomList([...symptomList, newData[0]]);
     zeroArray.splice(parseInt(newData[1]), 1, 1);
     while (true) {
+      console.log('stuck')
       if (data[parseInt(newData[1])]) {
         freqArray.splice(
           parseInt(newData[1]),
