@@ -1,3 +1,9 @@
+.logo {
+  width: 100px;
+  height: 100px;
+  background-image: url("logo.png"); 
+}
+
 .searchInputs {
     margin-top: 105px;
     display: flex;
@@ -75,3 +81,5 @@
   .white{
     visibility: hidden;
   }
+
+  
