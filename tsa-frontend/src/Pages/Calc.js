@@ -1,16 +1,16 @@
-import SearchBar from "./Components/Searchbar";
-import Logo from "./Components/Logo";
-import data from "./data/data.json";
+import SearchBar from "../Components/Searchbar";
+import Logo from "../Components/Logo";
+import data from "../data/data.json";
 import Alert from "@mui/material/Alert";
-import Symptom from "./Components/Symptom";
-import diseaseData from "./data/data2.json";
-import Disease from "./Components/Disease";
-import { chatGptCall } from "./helper/chatGptCall";
-import * as calc from "./helper/PercentCalculator";
-import { bestMatchAlgo } from "./helper/bestMatchAlgo";
-import { inputArray } from "./helper/inputArray";
+import Symptom from "../Components/Symptom";
+import diseaseData from "../data/data2.json";
+import Disease from "../Components/Disease";
+import { chatGptCall } from "../helper/chatGptCall";
+import * as calc from "../helper/PercentCalculator";
+import { bestMatchAlgo } from "../helper/bestMatchAlgo";
+import { inputArray } from "../helper/inputArray";
 import React, { useState, useEffect } from "react";
-import "./App.css";
+import "./Calc.css";
 const zeroArray = new Array(406).fill(0);
 const freqArray = new Array(406).fill(0);
 export default function Calc() {

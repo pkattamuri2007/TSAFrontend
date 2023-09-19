@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React from "react";
-import Calc from "./Calc";
-import Home from "./Home";
+import Calc from "./Pages/Calc";
+import Home from "./Pages/Home";
 
 // OPEN AI CONFIGURATION
 
