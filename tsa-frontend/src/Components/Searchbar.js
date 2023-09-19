@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./Searchbar.css";
-import SearchIcon from '@mui/icons-material/Search';
-import CloseIcon from '@mui/icons-material/Close';
-
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
+import symData from "../data/data.json";
 function SearchBar({ placeholder, data, onDataSubmit }) {
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
@@ -26,10 +26,14 @@ function SearchBar({ placeholder, data, onDataSubmit }) {
     setWordEntered("");
   };
   const onSubmitHandler = (event) => {
-    onDataSubmit(event.target.textContent.split('+'));
-    setFilteredData([]);
-    setWordEntered("");
-  }
+    for (let i = 0; i < symData.length; i++) {
+      if (symData[i].symptom === event.target.textContent) {
+        onDataSubmit([event.target.textContent, symData[i].id]);
+        setFilteredData([]);
+        setWordEntered("");
+      }
+    }
+  };
   return (
     <div className="search">
       <div className="searchInputs">
@@ -51,9 +55,15 @@ function SearchBar({ placeholder, data, onDataSubmit }) {
         <div className="dataResult">
           {filteredData.slice(0, 15).map((value, key) => {
             return (
-              <button onClick = {onSubmitHandler} className="dataItem" href={value.link} target="_blank" rel="noopener noreferrer">
+              <button
+                key={key}
+                onClick={onSubmitHandler}
+                className="dataItem"
+                href={value.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <p>{value.symptom}</p>
-                <p className="white">+{value.id}</p>
               </button>
             );
           })}

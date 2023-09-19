@@ -10,6 +10,7 @@ import * as calc from "../helper/PercentCalculator";
 import { bestMatchAlgo } from "../helper/bestMatchAlgo";
 import { inputArray } from "../helper/inputArray";
 import React, { useState, useEffect } from "react";
+import { deleteArray } from "../helper/deleteArray";
 import "./Calc.css";
 const zeroArray = new Array(406).fill(0);
 const freqArray = new Array(406).fill(0);
@@ -57,6 +58,10 @@ export default function Calc() {
     );
   };
 
+  const handleSymptomDelete = (data) => {
+    console.log(data);
+    deleteArray(setSymptomList, symptomList, data, zeroArray);
+  };
   var symptomChance = calc.percentCalculator(finalDiseases, symptomList);
   finalDiseases.sort(function (a, b) {
     return (
@@ -69,6 +74,7 @@ export default function Calc() {
       <SearchBar
         placeholder="Enter Your Symptoms..."
         data={data}
+        key={data}
         onDataSubmit={dataSubmitHandler}
       />
       {symptomList.length < 3 ? (
@@ -77,9 +83,20 @@ export default function Calc() {
         </Alert>
       ) : null}
       <div className="App-header">Selected Symptoms</div>
-
+      {console.log(symptomList)}
       {symptomList.map((data, id) => {
-        return <Symptom data={data} id={id} />;
+        if (data[0] != undefined) {
+          return (
+            <Symptom
+              key={id}
+              data={data}
+              id={id}
+              handleSymptomDelete={handleSymptomDelete}
+            />
+          );
+        } else {
+          return null;
+        }
       })}
       <button className="button-9" onClick={onSubmitHandler}>
         Submit
