@@ -16,6 +16,7 @@ const zeroArray = new Array(406).fill(0);
 const freqArray = new Array(406).fill(0);
 export default function Calc() {
   const [isLoading, setIsLoading] = useState(false);
+  const [symptomChance, setSymptomChance] = useState([]);
   //LISTS ALL SYMPTOMS
   const [symptomList, setSymptomList] = useState([]);
   //LISTS ALL DISEASES
@@ -36,8 +37,10 @@ export default function Calc() {
   }, [description]);
 
   //WHEN SUBMIT BUTTON IS CLICKED
-  const onSubmitHandler = (newData) => {
-    bestMatchAlgo(
+  const onSubmitHandler = async (newData) => {
+    console.log("submitting");
+
+    const response = await bestMatchAlgo(
       diseaseData,
       zeroArray,
       data,
@@ -46,7 +49,12 @@ export default function Calc() {
       setWhenSubmit,
       whenSubmit
     );
+    console.log(response);
+    console.log(symptomList);
+    await setSymptomChance(calc.percentCalculator(response, symptomList));
+    console.log(symptomChance);
   };
+
   const dataSubmitHandler = (newData) => {
     inputArray(
       setSymptomList,
@@ -62,8 +70,9 @@ export default function Calc() {
     console.log(data);
     deleteArray(setSymptomList, symptomList, data, zeroArray);
   };
-  var symptomChance = calc.percentCalculator(finalDiseases, symptomList);
   finalDiseases.sort(function (a, b) {
+    console.log(finalDiseases.indexOf(b));
+    console.log(finalDiseases.indexOf(a));
     return (
       symptomChance[finalDiseases.indexOf(b)] -
       symptomChance[finalDiseases.indexOf(a)]
@@ -85,7 +94,7 @@ export default function Calc() {
       <div className="App-header">Selected Symptoms</div>
       {console.log(symptomList)}
       {symptomList.map((data, id) => {
-        if (data[0] != undefined) {
+        if (data[0] !== undefined) {
           return (
             <Symptom
               key={id}

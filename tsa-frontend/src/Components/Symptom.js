@@ -1,6 +1,5 @@
 import React from "react";
 import Chip from "@mui/material/Chip";
-import symData from "../data/data.json";
 export default function Symptom({ data, id, handleSymptomDelete }) {
   const handleSymptom = () => {
     handleSymptomDelete([data[1], data[0]]);
