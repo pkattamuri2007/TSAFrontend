@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import SearchBar from "./Components/Searchbar";
+import Logo from "./Components/Logo";
 import data from "./data/data.json";
 import Alert from "@mui/material/Alert";
 import Symptom from "./Components/Symptom";
